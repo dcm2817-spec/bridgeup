@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mentor Profile — BridgeUp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a href="mentors.html" class="back-link" aria-label="Back to mentor list">&larr; Back</a>
+    </header>
+
+    <main style="flex:1;">
+      <div id="state" class="state-block" role="status">Loading profile…</div>
+
+      <div id="profile" hidden>
+        <h1 id="p-name" style="font-size: 26px; margin-bottom: var(--space-1);"></h1>
+        <p id="p-school" style="color: var(--color-ink-muted); font-size: 14px; margin-bottom: var(--space-1);"></p>
+        <span id="p-role" class="role-chip" style="display:inline-block; margin-bottom: var(--space-5);"></span>
+
+        <div>
+          <p class="section-label">How they started</p>
+          <p id="p-bio" style="font-size: 15px; line-height: 1.6;"></p>
+        </div>
+
+        <div style="margin-top: var(--space-5);">
+          <p class="section-label">Can help with</p>
+          <div id="p-topics" class="chip-row"></div>
+        </div>
+
+        <div style="margin-top: var(--space-6);">
+          <a id="p-message-link" href="#" class="btn btn-primary">Message Mentor</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./config.js";
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const stateEl = document.getElementById("state");
+    const profileEl = document.getElementById("profile");
+
+    const params = new URLSearchParams(window.location.search);
+    const mentorId = params.get("id");
+
+    function escapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str ?? "";
+      return div.innerHTML;
+    }
+
+    async function loadMentor() {
+      if (!mentorId) {
+        stateEl.textContent = "No mentor selected.";
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("mentors")
+        .select("id, name, school, role, bio, help_topics")
+        .eq("id", mentorId)
+        .single();
+
+      if (error || !data) {
+        stateEl.textContent = "Couldn't find that mentor.";
+        return;
+      }
+
+      document.getElementById("p-name").textContent = data.name;
+      document.getElementById("p-school").textContent = data.school;
+      document.getElementById("p-role").textContent = data.role;
+      document.getElementById("p-bio").textContent = data.bio || "No story shared yet.";
+
+      const topicsEl = document.getElementById("p-topics");
+      const topics = (data.help_topics || "")
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
+
+      topicsEl.innerHTML = topics.length
+        ? topics.map((t) => `<span class="chip">${escapeHtml(t)}</span>`).join("")
+        : `<span class="chip">General mentorship</span>`;
+
+      document.getElementById("p-message-link").href = `message.html?id=${encodeURIComponent(data.id)}`;
+
+      stateEl.hidden = true;
+      profileEl.hidden = false;
+    }
+
+    loadMentor();
+  </script>
+</body>
+</html>

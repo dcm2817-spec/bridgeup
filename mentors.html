@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Find a Mentor — BridgeUp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a href="index.html" class="back-link" aria-label="Back to home">&larr; Back</a>
+    </header>
+
+    <main style="flex:1;">
+      <h1 style="font-size: 22px; margin-bottom: var(--space-1);">Mentors</h1>
+      <p style="color: var(--color-ink-muted); font-size: 14px; margin-bottom: var(--space-5);">
+        Pick someone whose path looks like yours.
+      </p>
+
+      <div id="state" class="state-block" role="status">Loading mentors…</div>
+      <div id="grid" class="mentor-grid" hidden></div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./config.js";
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const stateEl = document.getElementById("state");
+    const gridEl = document.getElementById("grid");
+
+    function escapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str ?? "";
+      return div.innerHTML;
+    }
+
+    function firstNameLastInitial(fullName) {
+      const parts = (fullName || "").trim().split(/\s+/);
+      if (parts.length === 1) return parts[0];
+      const first = parts[0];
+      const lastInitial = parts[parts.length - 1][0] || "";
+      return `${first} ${lastInitial}.`;
+    }
+
+    async function loadMentors() {
+      const { data, error } = await supabase
+        .from("mentors")
+        .select("id, name, school, role")
+        .order("name", { ascending: true });
+
+      if (error) {
+        stateEl.textContent = "Couldn't load mentors right now. Please try again shortly.";
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        stateEl.textContent = "No mentors yet — check back soon.";
+        return;
+      }
+
+      stateEl.hidden = true;
+      gridEl.hidden = false;
+      gridEl.innerHTML = data.map((mentor) => `
+        <div class="card mentor-card">
+          <span class="name">${escapeHtml(firstNameLastInitial(mentor.name))}</span>
+          <span class="school">${escapeHtml(mentor.school)}</span>
+          <span class="role-chip">${escapeHtml(mentor.role)}</span>
+          <a class="btn btn-secondary" href="mentor.html?id=${encodeURIComponent(mentor.id)}">View Profile</a>
+        </div>
+      `).join("");
+    }
+
+    loadMentors();
+  </script>
+</body>
+</html>

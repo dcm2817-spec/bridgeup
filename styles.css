@@ -1,0 +1,307 @@
+/* ============================================
+   BridgeUp — shared styles
+   Token system: warm cream surface, ink text,
+   signal-orange action color. Flat, no gradients,
+   no drop shadows heavier than a hairline.
+   ============================================ */
+
+:root {
+  --color-bg: #F6EEDF;
+  --color-surface: #FFFFFF;
+  --color-ink: #221C14;
+  --color-ink-muted: #8A7F6E;
+  --color-primary: #FF6B00;
+  --color-primary-ink: #FFFFFF;
+  --color-border: #E7DAC2;
+  --color-danger: #B3261E;
+
+  --font-display: 'Space Grotesk', -apple-system, sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --max-width: 480px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0;
+}
+
+p { margin: 0; }
+
+a { color: inherit; }
+
+button, input, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+img { max-width: 100%; display: block; }
+
+/* Layout shell — every page sits in a centered mobile column */
+.shell {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--space-4) var(--space-7);
+}
+
+/* Top bar */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5) 0 var(--space-4);
+}
+
+.topbar .wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  color: var(--color-ink);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  text-decoration: none;
+  color: var(--color-ink-muted);
+  font-size: 14px;
+  font-weight: 500;
+  padding: var(--space-2) 0;
+  margin-left: -2px;
+}
+
+.back-link:focus-visible,
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.topbar-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+}
+
+/* Buttons */
+.btn {
+  appearance: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 15px 20px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  transition: transform 0.08s ease, opacity 0.15s ease;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-primary-ink);
+  width: 100%;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1.5px solid var(--color-border);
+  width: 100%;
+}
+
+/* Path motif — the one signature element, used sparingly */
+.path-rule {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: var(--space-5) 0;
+}
+
+.path-rule .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-border);
+  flex: none;
+}
+
+.path-rule .dot.on { background: var(--color-primary); }
+
+.path-rule .line {
+  flex: 1;
+  height: 1.5px;
+  background: var(--color-border);
+}
+
+/* Cards */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+}
+
+/* Mentor grid */
+.mentor-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 560px) {
+  .mentor-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.mentor-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.mentor-card .name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.mentor-card .school {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+}
+
+.mentor-card .role-chip {
+  align-self: flex-start;
+  margin-top: var(--space-2);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: rgba(255, 107, 0, 0.09);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.mentor-card .btn-secondary {
+  margin-top: var(--space-3);
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+/* Forms */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+}
+
+.field input,
+.field textarea {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 13px 14px;
+  width: 100%;
+}
+
+.field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.field-error {
+  font-size: 12.5px;
+  color: var(--color-danger);
+}
+
+/* Utility states */
+.state-block {
+  padding: var(--space-6) 0;
+  text-align: center;
+  color: var(--color-ink-muted);
+  font-size: 14px;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+.section-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+  margin-bottom: var(--space-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
